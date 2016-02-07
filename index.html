@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GW2 Price Check Thing</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body ng-app='price2' ng-controller='MainController'>
+    <div class='panel panel-success'>
+        <div class='panel-heading'>Search for an item!</div>
+        <div class='panel-body'>
+            <label for='itemSearch'>Search: </label>
+            <input type='text' id='itemSearch' ng-model='itemSearchTxt' placeholder='Enter some words!' ng-change='getInitialTimer()' />
+            <hr/> Now, pick an item:
+            <select ng-model='whichItem'>
+                <option ng-repeat='srchItem in initItems' value='{{srchItem}}'>{{srchItem.name}}</option>
+            </select>
+            <hr/>
+            <button ng-click='getRecipeList()' class='btn btn-success'>Get Recipes</button>
+        </div>
+    </div>
+    <table class='table table-striped'>
+        <thead>
+            <tr>
+                <th>Icon</th>
+                <th>Output Item</th>
+                <th>Output Price</th>
+                <th>Ingredients</th>
+                <th>Potential Profit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat='aRec in recList'>
+                <td><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
+                <td ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
+                <td>{{aRec.output_item_price|pricey}}</td>
+                <td>
+                    <table class='table table-striped'>
+                        <thead>
+                            <tr class='info'>
+                                <td>Icon:</td>
+                                <td>Name:</td>
+                                <td>Count:</td>
+                                <td>Price:</td>
+                            </tr>
+                        </thead>
+                        <tbody ng-show='aRec.isActive' class='ingTab'>
+                            <tr ng-repeat='recIng in aRec.ingredients'>
+                                <td><img class='itemIcon' src='{{recIng.item_pic}}'></td>
+                                <td>{{recIng.item_name}} <span class='derivWarn' ng-show='recIng.isDeriv' ng-mouseover='showDerivWarn(recIng,false)' ng-mouseout='showDerivWarn(recIng,true)' ng-click='getDeriv(recIng)'>!</span></td>
+                                <td>x {{recIng.count}}</td>
+                                <td>{{recIng.item_price|pricey}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>{{calcProf(aRec)|pricey}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div id='derivWarnBox'>ONOES</div>
+    <script src='https://code.jquery.com/jquery-1.11.1.js'></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://code.angularjs.org/1.4.8/angular-animate.min.js"></script>
+    <script src='./js/MainController.js'></script>
+</body>
+
+</html>

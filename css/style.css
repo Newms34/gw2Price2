@@ -1,0 +1,48 @@
+html,body{
+	width:100%;
+	height:100%;
+	margin:0;
+}
+/*.ingTable{
+	max-height:3000px;
+	opacity:1;
+	transition:0.5s;
+}*/
+.ingTable.ng-hide{
+	max-height:0;
+	opacity:0;
+	transition:0.5s linear all;
+}
+
+.fade.ng-hide {
+  transition:0.5s linear all;
+  opacity:0;
+}
+.itemIcon{
+	width:64px;
+	height:64px;
+}
+.derivWarn{
+	display:inline-block;
+	background:#900;
+	color:#fff;
+	width:20px;
+	height:20px;
+	cursor:pointer;
+	text-align: center;
+	border-radius:2px;
+}
+.derivWarn:hover{
+	background:#a22;
+}
+#derivWarnBox{
+	position:fixed;
+	pointer-events:none;
+	width:220px;
+	height:100px;
+	padding:5px;
+	background:rgba(0,0,0,.7);
+	opacity:0;
+	color:#fff;
+	transition:.5s;
+}
