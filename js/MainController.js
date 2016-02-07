@@ -19,7 +19,7 @@ app.controller("MainController", function($scope, $window, $q) {
             console.log('NOM', nom)
             for (var n = 0; n < $scope.recList.length; n++) {
                 //first output item gets a name
-                n ? $scope.recList[n].isActive = false : $scope.recList[n].isActive = true;
+                $scope.recList[n].isActive = false;
                 for (var q = 0; q < nom.length; q++) {
                     //find name;
                     if ($scope.recList[n].output_item_id == nom[q].result.data_id) {
@@ -40,9 +40,22 @@ app.controller("MainController", function($scope, $window, $q) {
                         }
                     }
                 }
+                //finally, calc profit:
+                $scope.recList[n].profit = $scope.calcProf($scope.recList[n]); 
+                console.log('PROFIT:',$scope.recList[n].profit)
             }
-            console.log($scope.recList);
         })
+    };
+    $scope.currSort = 'output_item_name';
+    $scope.revSort = false;
+    $scope.sortRows=function(rowName){
+    	if (rowName == $scope.currSort){
+    		$scope.revSort = !$scope.revSort;
+    	} 
+    	else{
+    		$scope.currSort=rowName
+    		$scope.revSort = false;
+    	}
     };
     $scope.getInitialItemList = function(srch) {
         //use a search term to search gw2spidy for an item;

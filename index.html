@@ -25,14 +25,14 @@
         <thead>
             <tr>
                 <th>Icon</th>
-                <th>Output Item</th>
-                <th>Output Price</th>
+                <th class='sortableRow' ng-click='sortRows("output_item_name")'>Output Item</th>
+                <th class='sortableRow' ng-click='sortRows("output_item_price")'>Output Price</th>
                 <th>Ingredients</th>
-                <th>Potential Profit</th>
+                <th class='sortableRow' ng-click='sortRows("profit")'>Potential Profit</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat='aRec in recList'>
+            <tr ng-repeat='aRec in recList|orderBy:currSort:revSort'>
                 <td><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
                 <td ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
                 <td>{{aRec.output_item_price|pricey}}</td>
@@ -56,7 +56,7 @@
                         </tbody>
                     </table>
                 </td>
-                <td>{{calcProf(aRec)|pricey}}</td>
+                <td>{{aRec.profit|pricey}}</td>
             </tr>
         </tbody>
     </table>

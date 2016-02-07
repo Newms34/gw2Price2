@@ -54,3 +54,6 @@ footer{
 	text-align: center;
 	bottom:0px;
 }
+.sortableRow{
+	cursor:pointer;
+}
