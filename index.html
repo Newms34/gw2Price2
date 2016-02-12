@@ -29,12 +29,13 @@
                 <th class='sortableRow' ng-click='sortRows("output_item_price")'>Output Price</th>
                 <th>Ingredients</th>
                 <th class='sortableRow' ng-click='sortRows("profit")'>Potential Profit</th>
+                <th>Gw2Spidy.com Link</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat='aRec in recList|orderBy:currSort:revSort'>
-                <td><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
-                <td ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
+                <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
+                <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
                 <td>{{aRec.output_item_price|pricey}}</td>
                 <td>
                     <table class='table table-striped'>
@@ -49,7 +50,7 @@
                         <tbody ng-show='aRec.isActive' class='ingTab'>
                             <tr ng-repeat='recIng in aRec.ingredients'>
                                 <td><img class='itemIcon' src='{{recIng.item_pic}}'></td>
-                                <td>{{recIng.item_name}} <span class='derivWarn' ng-show='recIng.isDeriv' ng-mouseover='showDerivWarn(recIng,false)' ng-mouseout='showDerivWarn(recIng,true)' ng-click='getDeriv(recIng)'>!</span></td>
+                                <td>{{recIng.item_name}} <span class='derivWarn' ng-show='recIng.isDeriv' ng-mouseover='showBlurb(recIng,true,false)' ng-mouseout='showBlurb(recIng,true,true)' ng-click='getDeriv(recIng)'>!</span></td>
                                 <td>x {{recIng.count}}</td>
                                 <td>{{recIng.item_price|pricey}}</td>
                             </tr>
@@ -57,16 +58,19 @@
                     </table>
                 </td>
                 <td>{{aRec.profit|pricey}}</td>
+                <td><a href='https://www.gw2spidy.com/item/{{aRec.output_item_id}}' target='_blank'>{{aRec.output_item_name}} on gw2pidy</a></td>
             </tr>
         </tbody>
     </table>
-    <div id='derivWarnBox'>ONOES</div>
+    <div id='derivWarnBox'>Something went wrong!</div>
+    <div id='workBox' ng-show='working'><div id='workSpin'></div>
     <footer>Made with care by <a href='https://github.com/Newms34/'>David Newman</a> and <a href='https://angularjs.org/'>AngularJS</a></footer>
     <script src='https://code.jquery.com/jquery-1.11.1.js'></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.4.8/angular-animate.min.js"></script>
     <script src='./js/MainController.js'></script>
+    <script src='./js/itemInf.js'></script>
 </body>
 
 </html>

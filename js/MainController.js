@@ -1,9 +1,10 @@
 var app = angular.module("price2", ['ngAnimate']);
 
-app.controller("MainController", function($scope, $window, $q) {
+app.controller("MainController", function($scope, $window, $q, itemInf) {
     $scope.initItems = [];
     $scope.recList = [];
     $scope.t;
+    $scope.working = false; //if this is true, stuff's fuzzed out. Lets user know we're still working
     $scope.getItemNames = function(itemArr) {
         var itemPromArr = [];
         for (var i = 0; i < itemArr.length; i++) {
@@ -41,32 +42,43 @@ app.controller("MainController", function($scope, $window, $q) {
                     }
                 }
                 //finally, calc profit:
-                $scope.recList[n].profit = $scope.calcProf($scope.recList[n]); 
-                console.log('PROFIT:',$scope.recList[n].profit)
+                $scope.recList[n].profit = $scope.calcProf($scope.recList[n]);
             }
+            //last step: send stuff to itemInf factory
+            //there's gotta be an easier way than injecting the entire scope in here
+            itemInf.getInfo($scope.recList, $scope, $q);
+            console.log('WORKING IS NOW', $scope.working)
         })
     };
     $scope.currSort = 'output_item_name';
     $scope.revSort = false;
-    $scope.sortRows=function(rowName){
-    	if (rowName == $scope.currSort){
-    		$scope.revSort = !$scope.revSort;
-    	} 
-    	else{
-    		$scope.currSort=rowName
-    		$scope.revSort = false;
-    	}
+    $scope.sortRows = function(rowName) {
+        if (rowName == $scope.currSort) {
+            $scope.revSort = !$scope.revSort;
+        } else {
+            $scope.currSort = rowName
+            $scope.revSort = false;
+        }
     };
     $scope.getInitialItemList = function(srch) {
         //use a search term to search gw2spidy for an item;
         $scope.initItems = [];
         $.get('https://www.gw2spidy.com/api/v0.9/json/item-search/' + srch, function(res) {
             for (var j = 0; j < res.results.length; j++) {
-                $scope.initItems.push({
-                    name: res.results[j].name,
-                    price: res.results[j].min_sale_unit_price,
-                    id: res.results[j].data_id
-                })
+                //look thru all the items.
+                var hasDup = false;
+                for (var q = 0; q < $scope.initItems.length; q++) {
+                	if ($scope.initItems[q].name==res.results[j].name){
+                		hasDup=true;
+                	}
+                }
+                if (!hasDup) {
+                    $scope.initItems.push({
+                        name: res.results[j].name,
+                        price: res.results[j].min_sale_unit_price,
+                        id: res.results[j].data_id
+                    })
+                }
             }
             $scope.$digest();
         })
@@ -90,6 +102,7 @@ app.controller("MainController", function($scope, $window, $q) {
         $scope.getRecipeList();
     }
     $scope.getRecipeList = function() {
+        $scope.working = true;
         console.log($scope.whichItem, typeof $scope.whichItem)
         if (typeof $scope.whichItem == 'string') {
             $scope.whichItem = JSON.parse($scope.whichItem);
@@ -152,7 +165,8 @@ app.controller("MainController", function($scope, $window, $q) {
         $scope.x = e.x || e.clientX;
         $scope.y = (e.y || e.clientY) + 10;
     }
-    $scope.showDerivWarn = function(i, m) {
+    $scope.showBlurb = function(i, t, m) {
+        //i = item, t = warning or description, m = in or out
         console.log(i, 'mode', m)
         if (!m) {
             $('#derivWarnBox').css({
@@ -160,7 +174,22 @@ app.controller("MainController", function($scope, $window, $q) {
                 'top': $scope.y + 'px',
                 'opacity': 1
             })
-            $('#derivWarnBox').html('<b>' + i.item_name + '</b> is the result of a recipe. Click to view what <i>other</i> items it might be used in!')
+            if (t) {
+                $('#derivWarnBox').html('<b>' + i.item_name + '</b> is the result of a recipe. Click to view what <i>other</i> items it might be used in!')
+            } else if (i.blurbDesc || i.blurbAttribs) {
+                var blurbStr = '';
+                if (i.blurbDesc && i.blurbDesc != '') {
+                    blurbStr += i.blurbDesc + '<br/>';
+                }
+                for (var q = 0; q < i.blurbAttribs.length; q++) {
+                    blurbStr += i.blurbAttribs[q] + '<br/>';
+                }
+                $('#derivWarnBox').html(blurbStr);
+            } else {
+                $('#derivWarnBox').css({
+                    'opacity': 0
+                })
+            }
         } else {
             $('#derivWarnBox').css({
                 'opacity': 0
