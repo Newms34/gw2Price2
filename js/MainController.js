@@ -47,7 +47,7 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             //last step: send stuff to itemInf factory
             //there's gotta be an easier way than injecting the entire scope in here
             itemInf.getInfo($scope.recList, $scope, $q);
-            console.log('WORKING IS NOW', $scope.working)
+            console.log('REC LIST------',$scope.recList);
         })
     };
     $scope.currSort = 'output_item_name';
@@ -65,10 +65,10 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
         $scope.initItems = [];
         $.get('https://www.gw2spidy.com/api/v0.9/json/item-search/' + srch, function(res) {
             for (var j = 0; j < res.results.length; j++) {
-                //look thru all the items.
+                //look thru all the items to see if this item's already there.
                 var hasDup = false;
                 for (var q = 0; q < $scope.initItems.length; q++) {
-                	if ($scope.initItems[q].name==res.results[j].name){
+                	if ($scope.initItems[q].id==res.results[j].data_id){
                 		hasDup=true;
                 	}
                 }
@@ -103,10 +103,10 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
     }
     $scope.getRecipeList = function() {
         $scope.working = true;
-        console.log($scope.whichItem, typeof $scope.whichItem)
         if (typeof $scope.whichItem == 'string') {
             $scope.whichItem = JSON.parse($scope.whichItem);
         }
+        document.title =  $scope.whichItem.name + ' - Gw2 Price Checker';
         console.log('this was triggered, ', $scope.whichItem, typeof $scope.whichItem)
         $.ajax({
             url: 'https://api.guildwars2.com/v2/recipes/search?input=' + $scope.whichItem.id,
@@ -151,7 +151,7 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
     }
     $scope.calcProf = function(rec) {
         //calculate potential profit!
-        var sellPrice = rec.output_item_price;
+        var sellPrice = rec.output_item_price * rec.output_item_count;
         var buyPrice = 0;
         for (var f = 0; f < rec.ingredients.length; f++) {
             //for each ingredient, add its cost times its req quantity
