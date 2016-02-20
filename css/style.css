@@ -3,11 +3,6 @@ html,body{
 	height:100%;
 	margin:0;
 }
-/*.ingTable{
-	max-height:3000px;
-	opacity:1;
-	transition:0.5s;
-}*/
 .ingTable.ng-hide{
 	max-height:0;
 	opacity:0;
@@ -74,7 +69,14 @@ footer{
 	animation: spinny 1s linear infinite;
 	-webkit-animation: spinny 1s linear infinite;
 }
-
+.smallTable{
+	display:block;
+	max-height:200px;
+	overflow-y:scroll;
+}
+.smallTable tbody,thead{
+	width:100%;
+}
 @keyframes spinny {
 	from {transform: rotateZ(0deg);}
 	to {transform: rotateZ(360deg);}

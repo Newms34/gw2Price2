@@ -47,10 +47,72 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             //last step: send stuff to itemInf factory
             //there's gotta be an easier way than injecting the entire scope in here
             itemInf.getInfo($scope.recList, $scope, $q);
-            console.log('REC LIST------',$scope.recList);
+            console.log('REC LIST------', $scope.recList);
         })
     };
     $scope.currSort = 'output_item_name';
+    $scope.adjOmit=function(){
+       
+    }
+    $scope.omit={};
+    $scope.itemNo = [{
+        id: 0,
+        name: "Armor",
+        pic:'\u26E8'
+    }, {
+        id: 19,
+        name: "Back",
+        pic:'\uD83D\uDCB0'
+    }, {
+        id: 2,
+        name: "Bag",
+        pic:'\uD83D\uDCBC'
+    }, {
+        id: 3,
+        name: "Consumable",
+        pic:'\uD83C\uDF54'
+    }, {
+        id: 4,
+        name: "Container",
+        pic:'\uD83D\uDCE6'
+    }, {
+        id: 5,
+        name: "Crafting Material",
+        pic:'\uD83C\uDF42'
+    }, {
+        id: 6,
+        name: "Gathering",
+        pic:'\uD83C\uDF32'
+    }, {
+        id: 7,
+        name: "Gizmo",
+        pic:'\u2699'
+    }, {
+        id: 11,
+        name: "Mini",
+        pic:'\uD83D\uDC01'
+    }, {
+        id: 13,
+        name: "Tool",
+        pic:'\u2692'
+    }, {
+        id: 15,
+        name: "Trinket",
+        pic:'\uD83D\uDC8D'
+    }, {
+        id: 16,
+        name: "Trophy",
+        pic:'\uD83C\uDFC6'
+    }, {
+        id: 17,
+        name: "Upgrade Component",
+        pic:'\uD83D\uDC8E'
+    }, {
+        id: 18,
+        name: "Weapon",
+        pic:'\u2694'
+    }]
+https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png
     $scope.revSort = false;
     $scope.sortRows = function(rowName) {
         if (rowName == $scope.currSort) {
@@ -60,19 +122,25 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             $scope.revSort = false;
         }
     };
-    $scope.getInitialItemList = function(srch) {
+    $scope.getInitialItemList = function(srch, page) {
         //use a search term to search gw2spidy for an item;
-        $scope.initItems = [];
-        $.get('https://www.gw2spidy.com/api/v0.9/json/item-search/' + srch, function(res) {
+        if (page < 2) {
+            $scope.initItems = [];
+        }
+        $.get('https://www.gw2spidy.com/api/v0.9/json/item-search/' + srch + '/' + page, function(res) {
             for (var j = 0; j < res.results.length; j++) {
                 //look thru all the items to see if this item's already there.
-                var hasDup = false;
+                var hasProb = false;
                 for (var q = 0; q < $scope.initItems.length; q++) {
-                	if ($scope.initItems[q].id==res.results[j].data_id){
-                		hasDup=true;
-                	}
+                    if ($scope.initItems[q].id == res.results[j].data_id) {
+                        hasProb = true;
+                    }
                 }
-                if (!hasDup) {
+                if ($scope.omit[res.results[j].type_id]){
+                    console.log('type',res.results[j].type_id,'is omitted')
+                    hasProb=true;
+                }
+                if (!hasProb) {
                     $scope.initItems.push({
                         name: res.results[j].name,
                         price: res.results[j].min_sale_unit_price,
@@ -80,13 +148,19 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
                     })
                 }
             }
-            $scope.$digest();
-        })
+            if (res.page < res.last_page) {
+                page++;
+                $scope.getInitialItemList($scope.itemSearchTxt, page);
+            } else {
+                console.log('final result:', res);
+                $scope.$digest();
+            }
+        });
     };
-    $scope.getInitialItemList('potato');
+    $scope.getInitialItemList('potato','1');
     $scope.getInitialTimer = function() {
         $scope.initItems = [];
-        $scope.t = setTimeout($scope.getInitialItemList($scope.itemSearchTxt), 1000);
+        $scope.t = setTimeout($scope.getInitialItemList($scope.itemSearchTxt, '1'), 1000);
     }
     $scope.getDeriv = function(der) {
         //only item is the one we clicked
@@ -106,7 +180,7 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
         if (typeof $scope.whichItem == 'string') {
             $scope.whichItem = JSON.parse($scope.whichItem);
         }
-        document.title =  $scope.whichItem.name + ' - Gw2 Price Checker';
+        document.title = $scope.whichItem.name + ' - Gw2 Price Checker';
         console.log('this was triggered, ', $scope.whichItem, typeof $scope.whichItem)
         $.ajax({
             url: 'https://api.guildwars2.com/v2/recipes/search?input=' + $scope.whichItem.id,
@@ -115,7 +189,14 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             success: function(recRes) {
                 //now we've got a list of recipes made with this item. Need
                 //to get actual recipe data tho.
-                $scope.getRecList(recRes);
+                console.log('recRes', recRes)
+                if (recRes.length) {
+                    $scope.getRecList(recRes);
+                } else {
+                    alert('no recs!');
+                    $scope.working = false;
+                    $scope.$digest();
+                }
             }
         });
     }

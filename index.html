@@ -17,6 +17,31 @@
             <select ng-model='whichItem'>
                 <option ng-repeat='srchItem in initItems' value='{{srchItem}}'>{{srchItem.name}}</option>
             </select>
+            <br>
+            <!-- <b>Omit: </b><div ng-repeat = 'itNo in itemNo'><input type='checkbox' ng-model='omit[itNo.id]' ng-change='adjOmit()' id='omit{{itNo.name}}'/><label for='omit{{itNo.name}}'>{{itNo.name}}{{itNo.pic}}</label> </div> -->
+            <table class='table table-hover smallTable'>
+                <thead>
+                    <tr class='success'>
+                        <th colspan='3' style='text-align:center;'>Omit Certain Types</th>
+                    </tr>
+                    <tr>
+                        <th>Omit?</th>
+                        <th>Type</th>
+                        <th>&#9745;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat='itNo in itemNo'>
+                        <td>
+                            <input type='checkbox' ng-model='omit[itNo.id]' ng-change='adjOmit()' id='omit{{itNo.name}}' />
+                        </td>
+                        <td>
+                            <label for='omit{{itNo.name}}'>{{itNo.name}}</label>
+                        </td>
+                        <td>{{itNo.pic}}</td>
+                    </tr>
+                </tbody>
+            </table>
             <hr/>
             <button ng-click='getRecipeList()' class='btn btn-success'>Get Recipes</button>
         </div>
@@ -26,7 +51,7 @@
             <tr>
                 <th>Icon</th>
                 <th class='sortableRow' ng-click='sortRows("output_item_name")'>Output Item</th>
-                <th class='sortableRow' ng-click='sortRows("output_item_price")'>Output Price</th>
+                <th class='sortableRow' ng-click='sortRows("output_item_price")'>Output Price (per item)</th>
                 <th>Ingredients</th>
                 <th class='sortableRow' ng-click='sortRows("profit")'>Potential Profit</th>
                 <th>Gw2Spidy.com Link</th>
@@ -34,7 +59,7 @@
         </thead>
         <tbody>
             <tr ng-repeat='aRec in recList|orderBy:currSort:revSort'>
-                <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
+                <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)'><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
                 <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
                 <td>{{aRec.output_item_price|pricey}}</td>
                 <td>
@@ -63,14 +88,15 @@
         </tbody>
     </table>
     <div id='derivWarnBox'>Something went wrong!</div>
-    <div id='workBox' ng-show='working'><div id='workSpin'></div>
-    <footer>Made with care by <a href='https://github.com/Newms34/'>David Newman</a> and <a href='https://angularjs.org/'>AngularJS</a></footer>
-    <script src='https://code.jquery.com/jquery-1.11.1.js'></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-    <script src="https://code.angularjs.org/1.4.8/angular-animate.min.js"></script>
-    <script src='./js/MainController.js'></script>
-    <script src='./js/itemInf.js'></script>
+    <div id='workBox' ng-show='working'>
+        <div id='workSpin'></div>
+        <footer>Made with care by <a href='https://github.com/Newms34/'>David Newman</a> and <a href='https://angularjs.org/'>AngularJS</a></footer>
+        <script src='https://code.jquery.com/jquery-1.11.1.js'></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="https://code.angularjs.org/1.4.8/angular-animate.min.js"></script>
+        <script src='./js/MainController.js'></script>
+        <script src='./js/itemInf.js'></script>
 </body>
 
 </html>
