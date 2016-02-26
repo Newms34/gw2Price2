@@ -16,11 +16,11 @@ app.factory('itemInf', function($rootScope) {
                 for (var j = 0; j < itemInfos.length; j++) {
                     var attribs = [];
                     var desc = itemInfos[j].description ? itemInfos[j].description : '';
-                    if (itemInfos[j].details && itemInfos[j].details.type.toLowerCase() == 'rune') {
+                    if (itemInfos[j].details && itemInfos[j].details.type && itemInfos[j].details.type.toLowerCase() == 'rune') {
                         //rune
                         attribs = itemInfos[j].details.bonuses;
                         console.log(itemInfos[j].name, 'is a Rune!')
-                    } else if (itemInfos[j].details && itemInfos[j].details.type.toLowerCase() == 'sigil') {
+                    } else if (itemInfos[j].details && itemInfos[j].details.type && itemInfos[j].details.type.toLowerCase() == 'sigil') {
                         //sigil
                         //attribs either itemInfos[j].details.infix_upgrade.buff.description
                         attribs = [itemInfos[j].details.infix_upgrade.buff.description]
@@ -41,7 +41,11 @@ app.factory('itemInf', function($rootScope) {
                         //cons
                         attribs = itemInfos[j].details.description? itemInfos[j].details.description.split('\r'):[' '];
                         console.log(itemInfos[j].name, 'is a consumable!')
-                    } else {
+                    }else if (itemInfos[j].type && itemInfos[j].type.toLowerCase() == 'component') {
+                        //cons
+                        attribs = [' '];
+                        console.log(itemInfos[j].name, 'is a component!')
+                    }  else {
                         console.log('Not sure what ', itemInfos[j].name, 'is, but details:', (itemInfos[j].details || itemInfos[j].type), ', and description:', itemInfos[j].description)
                     }
                     //now we normalize any flavor text or reminder text
@@ -54,7 +58,6 @@ app.factory('itemInf', function($rootScope) {
                         }
                     }
                 }
-                console.log(recs)
                 //now all the items have descriptions. woopie
                 scope.working = false;
             })

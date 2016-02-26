@@ -48,72 +48,75 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             //there's gotta be an easier way than injecting the entire scope in here
             itemInf.getInfo($scope.recList, $scope, $q);
             console.log('REC LIST------', $scope.recList);
+            for(n=0;n<$scope.recList.length;n++){
+                console.log('Recipe for '+$scope.recList[n].output_item_name+' is made by '+$scope.recList[n].disciplines)
+            }
         })
     };
     $scope.currSort = 'output_item_name';
-    $scope.adjOmit=function(){
-       
+    $scope.adjOmit = function() {
+
     }
-    $scope.omit={};
+    $scope.omit = {};
     $scope.itemNo = [{
         id: 0,
         name: "Armor",
-        pic:'\u26E8'
+        pic: '\u26E8'
     }, {
         id: 19,
         name: "Back",
-        pic:'\uD83D\uDCB0'
+        pic: '\uD83D\uDCB0'
     }, {
         id: 2,
         name: "Bag",
-        pic:'\uD83D\uDCBC'
+        pic: '\uD83D\uDCBC'
     }, {
         id: 3,
         name: "Consumable",
-        pic:'\uD83C\uDF54'
+        pic: '\uD83C\uDF54'
     }, {
         id: 4,
         name: "Container",
-        pic:'\uD83D\uDCE6'
+        pic: '\uD83D\uDCE6'
     }, {
         id: 5,
         name: "Crafting Material",
-        pic:'\uD83C\uDF42'
+        pic: '\uD83C\uDF42'
     }, {
         id: 6,
         name: "Gathering",
-        pic:'\uD83C\uDF32'
+        pic: '\uD83C\uDF32'
     }, {
         id: 7,
         name: "Gizmo",
-        pic:'\u2699'
+        pic: '\u2699'
     }, {
         id: 11,
         name: "Mini",
-        pic:'\uD83D\uDC01'
+        pic: '\uD83D\uDC01'
     }, {
         id: 13,
         name: "Tool",
-        pic:'\u2692'
+        pic: '\u2692'
     }, {
         id: 15,
         name: "Trinket",
-        pic:'\uD83D\uDC8D'
+        pic: '\uD83D\uDC8D'
     }, {
         id: 16,
         name: "Trophy",
-        pic:'\uD83C\uDFC6'
+        pic: '\uD83C\uDFC6'
     }, {
         id: 17,
         name: "Upgrade Component",
-        pic:'\uD83D\uDC8E'
+        pic: '\uD83D\uDC8E'
     }, {
         id: 18,
         name: "Weapon",
-        pic:'\u2694'
+        pic: '\u2694'
     }]
-https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png
-    $scope.revSort = false;
+    https: //render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png
+        $scope.revSort = false;
     $scope.sortRows = function(rowName) {
         if (rowName == $scope.currSort) {
             $scope.revSort = !$scope.revSort;
@@ -132,13 +135,13 @@ https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/1024
                 //look thru all the items to see if this item's already there.
                 var hasProb = false;
                 for (var q = 0; q < $scope.initItems.length; q++) {
-                    if ($scope.initItems[q].id == res.results[j].data_id) {
+                    if ($scope.initItems[q].name == res.results[j].name) {
                         hasProb = true;
                     }
                 }
-                if ($scope.omit[res.results[j].type_id]){
-                    console.log('type',res.results[j].type_id,'is omitted')
-                    hasProb=true;
+                if ($scope.omit[res.results[j].type_id]) {
+                    console.log('type', res.results[j].type_id, 'is omitted')
+                    hasProb = true;
                 }
                 if (!hasProb) {
                     $scope.initItems.push({
@@ -157,9 +160,10 @@ https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/1024
             }
         });
     };
-    $scope.getInitialItemList('potato','1');
+    $scope.getInitialItemList('potato', '1');
     $scope.getInitialTimer = function() {
         $scope.initItems = [];
+        $scope.t = null;
         $scope.t = setTimeout($scope.getInitialItemList($scope.itemSearchTxt, '1'), 1000);
     }
     $scope.getDeriv = function(der) {
@@ -277,12 +281,43 @@ https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/1024
             })
         }
     }
+    $scope.scrollTime = undefined;
+    $scope.scrollMe = function(e) {
+        var vertPos = e.offsetY / 200;
+        console.log(parseInt($('#noItTab').scrollTop()),$scope.scrollTime)
+        if (vertPos < .20 && parseInt($('#noItTab').scrollTop())>1 && !$scope.scrollTime) {
+            $scope.scrollTime = setInterval(function() { $('#noItTab').scrollTop($('#noItTab').scrollTop() - .1) }, 20);
+        } else if (vertPos > .80 && !$scope.scrollTime) {
+            $scope.scrollTime = setInterval(function() { $('#noItTab').scrollTop($('#noItTab').scrollTop() + .1) }, 20);
+        } else if (vertPos<.8 && vertPos>.2){
+            clearInterval($scope.scrollTime);
+            $scope.scrollTime = undefined;
+        }
+    }
+    $scope.discs = {
+        'Chef':'https://render.guildwars2.com/file/424E410B90DE300CEB4A1DE2AB954A287C7A5419/102465.png',
+        'Artificer':'https://render.guildwars2.com/file/0D75999D6DEA1FDFF9DB43BBC2054B62764EB9A0/102463.png',
+        'Jeweler':'https://render.guildwars2.com/file/F97F4D212B1294052A196734C71BCE42E199735B/102458.png',
+        'Weaponsmith':'https://render.guildwars2.com/file/AEEF1CF774EE0D5917D5E1CF3AAC269FEE5EC03A/102460.png',
+        'Huntsman':'https://render.guildwars2.com/file/0C91017241F016EF35A2BCCE183CA9F7374023FC/102462.png',
+        'Armorsmith':'https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png',
+        'Leatherworker':'https://render.guildwars2.com/file/192D1D0D73BA7899F1745F32BAC1634C1B4671BF/102464.png',
+        'Tailor':'https://render.guildwars2.com/file/0EB64958BE48AB9605DD56807713215095B8BEED/102459.png',
+        'Scribe':'https://wiki.guildwars2.com/images/0/0b/Scribe_tango_icon_20px.png'
+    };
+    $scope.getDiscp = function(disArr){
+        return $scope.discs[disArr[0]]||'https://render.guildwars2.com/file/A5DE06130C0D1E2C9A9780EAD037E61462B1E825/102597.png';
+    }
 });
 app.filter('pricey', function() {
     //formats price in g,s,c format
     return function(price) {
         var isNeg = false;
-        price = price.toString();
+        try {
+            price = price.toString();
+        } catch (e) {
+            console.log(e, price)
+        }
         price = price.split(''); //convert price to an array;
         if (price[0] == '-') {
             //chop off initial neg if price <0

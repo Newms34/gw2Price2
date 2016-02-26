@@ -19,7 +19,7 @@
             </select>
             <br>
             <!-- <b>Omit: </b><div ng-repeat = 'itNo in itemNo'><input type='checkbox' ng-model='omit[itNo.id]' ng-change='adjOmit()' id='omit{{itNo.name}}'/><label for='omit{{itNo.name}}'>{{itNo.name}}{{itNo.pic}}</label> </div> -->
-            <table class='table table-hover smallTable'>
+            <table class='table table-hover smallTable' ng-mousemove='scrollMe($event)' id='noItTab'>
                 <thead>
                     <tr class='success'>
                         <th colspan='3' style='text-align:center;'>Omit Certain Types</th>
@@ -51,6 +51,7 @@
             <tr>
                 <th>Icon</th>
                 <th class='sortableRow' ng-click='sortRows("output_item_name")'>Output Item</th>
+                <th>Discipline</th>
                 <th class='sortableRow' ng-click='sortRows("output_item_price")'>Output Price (per item)</th>
                 <th>Ingredients</th>
                 <th class='sortableRow' ng-click='sortRows("profit")'>Potential Profit</th>
@@ -58,9 +59,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat='aRec in recList|orderBy:currSort:revSort'>
+            <tr ng-repeat='aRec in recList|orderBy:currSort:revSort' ng-show='recList.length>0'>
                 <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)'><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
                 <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
+                <td><img src='{{getDiscp(aRec.disciplines)}}'></td>
                 <td>{{aRec.output_item_price|pricey}}</td>
                 <td>
                     <table class='table table-striped'>
@@ -85,6 +87,7 @@
                 <td>{{aRec.profit|pricey}}</td>
                 <td><a href='https://www.gw2spidy.com/item/{{aRec.output_item_id}}' target='_blank'>{{aRec.output_item_name}} on gw2pidy</a></td>
             </tr>
+            <tr ng-show = '!recList.length'><td colspan = '7'>No recipes yet! Go ahead and search for an item above.</td></tr>
         </tbody>
     </table>
     <div id='derivWarnBox'>Something went wrong!</div>

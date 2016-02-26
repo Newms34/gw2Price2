@@ -72,10 +72,11 @@ footer{
 .smallTable{
 	display:block;
 	max-height:200px;
+	width:300px!important;
 	overflow-y:scroll;
 }
 .smallTable tbody,thead{
-	width:100%;
+	width:300px;
 }
 @keyframes spinny {
 	from {transform: rotateZ(0deg);}
