@@ -48,8 +48,8 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
             //there's gotta be an easier way than injecting the entire scope in here
             itemInf.getInfo($scope.recList, $scope, $q);
             console.log('REC LIST------', $scope.recList);
-            for(n=0;n<$scope.recList.length;n++){
-                console.log('Recipe for '+$scope.recList[n].output_item_name+' is made by '+$scope.recList[n].disciplines)
+            for (n = 0; n < $scope.recList.length; n++) {
+                console.log('Recipe for ' + $scope.recList[n].output_item_name + ' is made by ' + $scope.recList[n].disciplines)
             }
         })
     };
@@ -61,7 +61,7 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
     $scope.itemNo = [{
         id: 0,
         name: "Armor",
-        pic: '\u26E8'
+        pic: '\uD83D\uDC55'
     }, {
         id: 19,
         name: "Back",
@@ -284,29 +284,59 @@ app.controller("MainController", function($scope, $window, $q, itemInf) {
     $scope.scrollTime = undefined;
     $scope.scrollMe = function(e) {
         var vertPos = e.offsetY / 200;
-        console.log(parseInt($('#noItTab').scrollTop()),$scope.scrollTime)
-        if (vertPos < .20 && parseInt($('#noItTab').scrollTop())>1 && !$scope.scrollTime) {
+        console.log(parseInt($('#noItTab').scrollTop()), $scope.scrollTime, e)
+        if (vertPos < .20 && parseInt($('#noItTab').scrollTop()) > 1 && !$scope.scrollTime) {
             $scope.scrollTime = setInterval(function() { $('#noItTab').scrollTop($('#noItTab').scrollTop() - .1) }, 20);
         } else if (vertPos > .80 && !$scope.scrollTime) {
             $scope.scrollTime = setInterval(function() { $('#noItTab').scrollTop($('#noItTab').scrollTop() + .1) }, 20);
-        } else if (vertPos<.8 && vertPos>.2){
+        } else if (vertPos < .8 && vertPos > .2) {
             clearInterval($scope.scrollTime);
             $scope.scrollTime = undefined;
         }
     }
     $scope.discs = {
-        'Chef':'https://render.guildwars2.com/file/424E410B90DE300CEB4A1DE2AB954A287C7A5419/102465.png',
-        'Artificer':'https://render.guildwars2.com/file/0D75999D6DEA1FDFF9DB43BBC2054B62764EB9A0/102463.png',
-        'Jeweler':'https://render.guildwars2.com/file/F97F4D212B1294052A196734C71BCE42E199735B/102458.png',
-        'Weaponsmith':'https://render.guildwars2.com/file/AEEF1CF774EE0D5917D5E1CF3AAC269FEE5EC03A/102460.png',
-        'Huntsman':'https://render.guildwars2.com/file/0C91017241F016EF35A2BCCE183CA9F7374023FC/102462.png',
-        'Armorsmith':'https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png',
-        'Leatherworker':'https://render.guildwars2.com/file/192D1D0D73BA7899F1745F32BAC1634C1B4671BF/102464.png',
-        'Tailor':'https://render.guildwars2.com/file/0EB64958BE48AB9605DD56807713215095B8BEED/102459.png',
-        'Scribe':'https://wiki.guildwars2.com/images/0/0b/Scribe_tango_icon_20px.png'
+        'Chef': {
+            url: 'https://render.guildwars2.com/file/424E410B90DE300CEB4A1DE2AB954A287C7A5419/102465.png',
+            title: 'Cook'
+        },
+        'Artificer': {
+            url: 'https://render.guildwars2.com/file/0D75999D6DEA1FDFF9DB43BBC2054B62764EB9A0/102463.png',
+            title: 'Artificer'
+        },
+        'Jeweler': {
+            url: 'https://render.guildwars2.com/file/F97F4D212B1294052A196734C71BCE42E199735B/102458.png',
+            title: 'Jeweler'
+        },
+        'Weaponsmith': {
+            url: 'https://render.guildwars2.com/file/AEEF1CF774EE0D5917D5E1CF3AAC269FEE5EC03A/102460.png',
+            title: 'Weaponsmith'
+        },
+        'Huntsman': {
+            url: 'https://render.guildwars2.com/file/0C91017241F016EF35A2BCCE183CA9F7374023FC/102462.png',
+            title: 'Huntsman'
+        },
+        'Armorsmith': {
+            url: 'https://render.guildwars2.com/file/2952B92FA93C03A5281F94D223A4CE4C7E0B0906/102461.png',
+            title: 'Armorsmith'
+        },
+        'Leatherworker': {
+            url: 'https://render.guildwars2.com/file/192D1D0D73BA7899F1745F32BAC1634C1B4671BF/102464.png',
+            title: 'Leatherworker'
+        },
+        'Tailor': {
+            url: 'https://render.guildwars2.com/file/0EB64958BE48AB9605DD56807713215095B8BEED/102459.png',
+            title: 'Tailor'
+        },
+        'Scribe': {
+            url: 'https://wiki.guildwars2.com/images/0/0b/Scribe_tango_icon_20px.png',
+            title: 'Scribe'
+        }
     };
-    $scope.getDiscp = function(disArr){
-        return $scope.discs[disArr[0]]||'https://render.guildwars2.com/file/A5DE06130C0D1E2C9A9780EAD037E61462B1E825/102597.png';
+    $scope.getDiscp = function(disObj) {
+        return $scope.discs[disObj] || {
+            url: 'https://render.guildwars2.com/file/A5DE06130C0D1E2C9A9780EAD037E61462B1E825/102597.png',
+            title: 'Unknown'
+        }
     }
 });
 app.filter('pricey', function() {

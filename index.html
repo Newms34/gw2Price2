@@ -62,7 +62,7 @@
             <tr ng-repeat='aRec in recList|orderBy:currSort:revSort' ng-show='recList.length>0'>
                 <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)'><img class='itemIcon' src='{{aRec.output_item_pic}}'></td>
                 <td ng-mouseover='showBlurb(aRec,false,false)' ng-mouseout='showBlurb(aRec,false,true)' ng-click='aRec.isActive=!aRec.isActive' style='cursor:pointer;'><span ng-show='aRec.isActive==false'>&#9660;</span><span ng-show='aRec.isActive==true'>&#9650;</span>{{aRec.output_item_name}} </td>
-                <td><img src='{{getDiscp(aRec.disciplines)}}'></td>
+                <td><img ng-repeat='disc in aRec.disciplines' src='{{getDiscp(disc).url}}' title='{{getDiscp(disc).title}}'></td>
                 <td>{{aRec.output_item_price|pricey}}</td>
                 <td>
                     <table class='table table-striped'>
